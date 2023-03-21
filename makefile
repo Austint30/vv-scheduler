@@ -1,36 +1,30 @@
+.PHONY: default all clean
 
 CXX			=	g++
-CXXFLAGS	=	-std=c++11
+CXXFLAGS	=	-std=c++11 -g
 
-BIN_DIR 	=	bin
+BUILD_DIR	=	build
+BIN_DIR 	=	$(BUILD_DIR)/bin
+SRC_DIR		=	src
 
-SIM_TARGET	=	$(BUILD_DIR)/simulator.so
-SIM_SOURCES	=	simulator/src/$(wildcard *.cpp)
-SIM_OBJECTS	=	$(SIM_SOURCES:.cpp=.o)
-SIM_INCLUDE	=	simulator/include/$(wildcard *.hpp)
+CLIENT_TARGET		=	scheduler
+CLIENT_EXEC			=	$(BUILD_DIR)/bin/$(CLIENT_TARGET)
+CLIENT_SOURCES		=	$(wildcard src/*.cpp)
+CLIENT_OBJECTS		=	$(CLIENT_SOURCES:src/%.cpp=$(BUILD_DIR)/%.o)
 
-APP_TARGET	=	scheduler_app
-APP_EXEC	=	$(BIN_DIR)/$(APP_TARGET)
-APP_SOURCES	=	$(wildcard $(APP_TARGET)/src/*.cpp)
-APP_OBJECTS	=	$(APP_SOURCES:$(APP_TARGET)/src/%.cpp=$(APP_TARGET)/obj/%.o)
-APP_OBJ_DIR	=	$(APP_TARGET)/obj
-
-.PHONY: all clean
-
-$(BIN_DIR):
+$(BUILD_DIR):
 	mkdir -p $@
+	mkdir -p $(BIN_DIR)
 
-$(APP_OBJ_DIR):
-	mkdir -p $@
-
-$(APP_OBJECTS): $(APP_SOURCES) | $(APP_OBJ_DIR)
+$(CLIENT_OBJECTS): $(CLIENT_SOURCES) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ -c $^
 
-$(APP_TARGET): $(APP_OBJECTS) | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $^ -o $(APP_EXEC)
+$(CLIENT_TARGET): $(CLIENT_OBJECTS) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $^ -o $(CLIENT_EXEC)
 
-all: $(APP_TARGET)
+all: $(CLIENT_TARGET) $(LIB_TARGET)
 
 clean:
-	rm -rf ./$(BIN_DIR)/*
-	rm -rf ./$(APP_OBJ_DIR)/*
+	rm -rf ./$(BUILD_DIR)
+
+default: all
