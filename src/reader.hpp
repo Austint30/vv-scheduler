@@ -3,6 +3,7 @@
 #include <iostream>
 #include <queue>
 #include "./task.hpp"
+#include "./util.hpp"
 
 inline std::string removeLineEndings(std::string str){
     std::string fixed;
@@ -24,39 +25,80 @@ inline std::string removeLineEndings(std::string str){
     return fixed;
 }
 
+inline int parseNumTasks(std::string str){
+    std::string fixed = str.replace(0, 16, "");
+
+    return std::stoi(onlyAlNum(str));
+}
+
+inline std::vector<int> parseTask(std::string str){
+    if (str.length() == 0)
+        return std::vector<int>{};
+    
+    std::vector<int> values;
+    bool inBrackets = false;
+
+    std::string partial;
+
+    for (int i = 0; i < str.length(); i++)
+    {
+        char c = str.at(i);
+        if (c == '['){
+            inBrackets = true;
+            continue;
+        }
+        
+        if (c == ']'){
+            break;
+        }
+
+        if (c == ' ' && partial.length() > 0){
+            values.push_back(std::stoi(partial));
+            partial = "";
+            continue;
+        }
+
+        if (inBrackets && std::isalnum(c)){
+            partial += c;
+        }
+    }
+
+    if (partial.length() > 0){
+        values.push_back(std::stoi(partial));
+    }
+    
+    return values;
+}
+
 inline void inputToQueue(std::queue<Task*>& queue){
     int nTasks;
     std::string nTasksStr;
 
     while (nTasksStr.empty()){
-        std::cout << "Number of tasks: ";
         std::string nTasksStr;
         std::getline(std::cin, nTasksStr);
-
-        if (isLineComment(nTasksStr)){
-            nTasksStr = "";
-            continue;
-        }
-
-        nTasks = std::stoi(nTasksStr);
+        nTasks = parseNumTasks(nTasksStr);
         std::cout << std::endl;
         break;
     }
     
-    int taskNum = 1;
     while (queue.size() < nTasks){
         std::string line;
-        std::cout << "Task " << taskNum << ": ";
         std::getline(std::cin, line);
-
-        if (isLineComment(line)){
-            continue;
-        }
         std::cout << std::endl;
         line = removeLineEndings(line);
         if (line.length() == 0) continue;
-        queue.push(Task::ParseLine(line));
 
-        taskNum++;
+        auto taskProps = parseTask(line);
+
+        auto info = TaskInfo();
+        info.arrive = taskProps.at(0);
+        info.compute = taskProps.at(1);
+        info.deadline = taskProps.at(2);
+        info.ctxswitch = taskProps.at(3);
+
+        Task* task = new Task(info);
+
+        queue.push(task);
     }
 }

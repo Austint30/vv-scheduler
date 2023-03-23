@@ -3,6 +3,7 @@
 #include <queue>
 #include "./task.hpp"
 #include "./scheduler/scheduler.hpp"
+#include <unistd.h>
 
 #define SCHED_IMPL_TEMPLATE template<class SchedImpl>
 
@@ -26,17 +27,18 @@ public:
     void RunLoop(){
         while (!m_taskQueue.empty()){
 
-            auto nextTask = m_taskQueue.back();
+            auto nextTask = m_taskQueue.front();
             if (nextTask->HasArrived(m_time)){
 
                 // Task has arrived. Remove from tasks queue and place on active tasks vector.
                 m_activeTasks.push_back(nextTask);
                 m_taskQueue.pop();
+                continue;
             }
 
 
 
-
+            sleep(m_cycleDelay);
             m_time++;
         }
     }

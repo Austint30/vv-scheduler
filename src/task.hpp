@@ -14,7 +14,6 @@ class Task
 {
     friend class BaseScheduler;
 private:
-    Task(TaskInfo info);
     int m_currCompute;
     
     TaskInfo m_info;
@@ -26,9 +25,9 @@ private:
     };
 
 public:
+    Task(TaskInfo info);
     ~Task(){};
     TaskInfo getInfo(){ return m_info; };
-    static Task* ParseLine(std::string taskStr);
 
     bool HasArrived(int time){ return m_info.arrive <= time; }
     bool IsComplete(){ return m_currCompute <= 0; };

@@ -29,6 +29,12 @@ inline std::vector<std::string> splitWhitespace(std::string str){
     return split;
 }
 
-inline bool isLineComment(std::string str){
-    return str.length() > 1 && str.substr(0, 2) == "//";
+inline std::string onlyAlNum(std::string str){
+    std::string fixed = "";
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (std::isalnum(str[i]))
+            fixed += str[i];
+    }
+    return fixed;
 }
