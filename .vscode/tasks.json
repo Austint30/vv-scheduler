@@ -2,8 +2,8 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "make all",
-            "command": "/usr/bin/make",
+            "label": "build",
+            "command": "./build.sh",
             "args": [
                 "all"
             ],

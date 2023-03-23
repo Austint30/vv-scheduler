@@ -2,25 +2,36 @@
 
 #include "./util.hpp"
 
-class Task
-{
-private:
-    Task(){};
-public:
+// Information about a task from the input
+struct TaskInfo {
     int arrive;
     int compute;
     int deadline;
     int ctxswitch;
+};
+
+class Task
+{
+    friend class BaseScheduler;
+private:
+    Task(TaskInfo info);
+    int m_currCompute;
+    
+    TaskInfo m_info;
+
+    void AdvanceCompute(){
+        if (m_currCompute > 0){
+            m_currCompute--;
+        }
+    };
+
+public:
     ~Task(){};
-    static Task ParseLine(std::string taskStr)
-    {
-        Task task = Task();
-        auto numberStrs = splitWhitespace(taskStr);
-        task.arrive = std::stoi(numberStrs.at(0));
-        task.compute = std::stoi(numberStrs.at(1));
-        task.deadline = std::stoi(numberStrs.at(2));
-        task.ctxswitch = std::stoi(numberStrs.at(3));
-        return task;
-    }
+    TaskInfo getInfo(){ return m_info; };
+    static Task* ParseLine(std::string taskStr);
+
+    bool HasArrived(int time){ return m_info.arrive <= time; }
+    bool IsComplete(){ return m_currCompute <= 0; };
+    int GetRemainDeadline(int time){ return m_info.deadline - time; };
 };
 

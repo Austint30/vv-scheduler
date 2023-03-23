@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <queue>
 #include "./task.hpp"
@@ -22,23 +24,39 @@ inline std::string removeLineEndings(std::string str){
     return fixed;
 }
 
-inline void readToQueue(std::queue<Task>& queue){
+inline void inputToQueue(std::queue<Task*>& queue){
     int nTasks;
-
-    std::cout << "Number of tasks: ";
     std::string nTasksStr;
-    std::getline(std::cin, nTasksStr);
-    nTasks = std::stoi(nTasksStr);
-    std::cout << std::endl;
-    int taskNum = 0;
+
+    while (nTasksStr.empty()){
+        std::cout << "Number of tasks: ";
+        std::string nTasksStr;
+        std::getline(std::cin, nTasksStr);
+
+        if (isLineComment(nTasksStr)){
+            nTasksStr = "";
+            continue;
+        }
+
+        nTasks = std::stoi(nTasksStr);
+        std::cout << std::endl;
+        break;
+    }
+    
+    int taskNum = 1;
     while (queue.size() < nTasks){
-        taskNum++;
         std::string line;
         std::cout << "Task " << taskNum << ": ";
         std::getline(std::cin, line);
+
+        if (isLineComment(line)){
+            continue;
+        }
         std::cout << std::endl;
         line = removeLineEndings(line);
         if (line.length() == 0) continue;
         queue.push(Task::ParseLine(line));
+
+        taskNum++;
     }
 }

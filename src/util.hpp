@@ -2,8 +2,9 @@
 
 #include <string>
 #include <vector>
+#include <regex>
 
-std::vector<std::string> splitWhitespace(std::string str){
+inline std::vector<std::string> splitWhitespace(std::string str){
     std::vector<std::string> split;
 
     std::string word = "";
@@ -26,4 +27,8 @@ std::vector<std::string> splitWhitespace(std::string str){
     }
 
     return split;
+}
+
+inline bool isLineComment(std::string str){
+    return str.length() > 1 && str.substr(0, 2) == "//";
 }

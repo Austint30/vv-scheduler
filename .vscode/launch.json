@@ -5,17 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Debug (Linux)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/scheduler",
+            "program": "${workspaceFolder}/build/scheduler",
             "args": ["<", "${workspaceFolder}/testfiles/test1.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "make all",
+            "preLaunchTask": "build",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

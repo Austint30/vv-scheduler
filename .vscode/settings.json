@@ -58,7 +58,11 @@
         "numeric": "cpp",
         "random": "cpp",
         "string_view": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "bitset": "cpp",
+        "map": "cpp",
+        "regex": "cpp",
+        "sstream": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

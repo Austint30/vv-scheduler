@@ -2,18 +2,19 @@
 #include <queue>
 #include "./task.hpp"
 #include "./reader.hpp"
+#include "./simulator.hpp"
+#include "./scheduler/sts.hpp"
 
 int main(int argc, char const *argv[])
 {
 
-    std::queue<Task> queue;
-    readToQueue(queue);
+    std::queue<Task*> queue;
+    inputToQueue(queue);
 
-    while (queue.size() > 0){
-        Task task = queue.front();
-        queue.pop();
-        std::cout << task.arrive << " " << task.compute << " " << task.deadline << " " << task.ctxswitch << std::endl;
-    }
+    auto sim = new Simulator<STSScheduler>(queue);
+    sim->SetCycleDelay(1);
+    sim->RunLoop();
+
     
     return 0;
 }
