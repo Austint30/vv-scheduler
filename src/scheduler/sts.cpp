@@ -35,7 +35,7 @@ float STSScheduler::CalcMaxU(int time, std::priority_queue<Task*>& activeTasks){
 void STSScheduler::HandleArrivedTask(Task* task, int time){
     if (m_activeTasks.size() == 0){
         // Nothing in priority queue. Just insert it.
-        m_activeTasks.push(task);
+        PutArrivedTask(task);
         return;
     }
 
@@ -60,6 +60,8 @@ void STSScheduler::HandleArrivedTask(Task* task, int time){
 }
 
 void STSScheduler::Tick(int time){
+    if (m_activeTasks.size() == 0) return;
+    
     // Advance the computation of the top of the priority queue.
     Task* earliestTask = m_activeTasks.top();
     earliestTask->AdvanceCompute();
@@ -67,6 +69,7 @@ void STSScheduler::Tick(int time){
     if (earliestTask->IsComplete()){
         // This task is complete. Remove from m_activeTasks and
         // let simulator know.
-
+        m_activeTasks.pop();
+        DispatchCompleteTaskEvent(earliestTask);
     }
 }
