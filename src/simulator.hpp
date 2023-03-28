@@ -18,6 +18,7 @@ private:
 
     BaseScheduler* m_schedImpl = new STSScheduler();
 
+    void HandleTaskProcessEvent(Task* task);
     void HandleTaskCompleteEvent(Task* task);
     void HandleTaskRejectEvent(Task* task, float utilization);
     void HandleTaskAcceptEvent(Task* task, float utilization);

@@ -26,6 +26,7 @@ public:
     bool HasArrived(int time){ return m_info.arrive <= time; }
     bool IsComplete(){ return m_currCompute <= 0; };
     int GetRemainDeadline(int time){ return m_info.deadline - time; };
+    int GetRemainCompute(){ return m_currCompute; };
 
     void AdvanceCompute(){
         if (m_currCompute > 0){

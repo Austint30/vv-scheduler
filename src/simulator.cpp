@@ -11,6 +11,8 @@ Simulator::Simulator(std::queue<Task*>& taskQueue){
 void Simulator::RunLoop(){
 
     SchedEventInfo eventInfo;
+    
+    eventInfo.onTaskProcessing = std::bind(&Simulator::HandleTaskProcessEvent, this, _1);
     eventInfo.onTaskCompleted = std::bind(&Simulator::HandleTaskCompleteEvent, this, _1);
     eventInfo.onTaskRejected = std::bind(&Simulator::HandleTaskRejectEvent, this, _1, _2);
     eventInfo.onTaskAccepted = std::bind(&Simulator::HandleTaskAcceptEvent, this, _1, _2);
@@ -22,7 +24,7 @@ void Simulator::RunLoop(){
             auto nextTask = m_taskQueue.front();
             if (nextTask->HasArrived(m_time)){
                 // Task has arrived. Remove from tasks queue and place on active tasks vector.
-                std::cout << "Task " << nextTask->getInfo().taskNum << " has arrived at time " << m_time << std::endl;
+                std::cout << "🛬 Task " << nextTask->getInfo().taskNum << " has arrived at time " << m_time << std::endl;
                 m_schedImpl->HandleArrivedTask(nextTask, m_time);
                 m_taskQueue.pop();
                 continue;
@@ -34,6 +36,11 @@ void Simulator::RunLoop(){
         sleep(m_cycleDelay);
         m_time++;
     }
+}
+
+void Simulator::HandleTaskProcessEvent(Task* task){
+    std::cout << "⚙️  Processing Task " << task->getInfo().taskNum <<
+        " with " << task->GetRemainCompute() << " time left" << std::endl;
 }
 
 void Simulator::HandleTaskCompleteEvent(Task* task){

@@ -61,15 +61,19 @@ void STSScheduler::HandleArrivedTask(Task* task, int time){
 
 void STSScheduler::Tick(int time){
     if (m_activeTasks.size() == 0) return;
-    
+
     // Advance the computation of the top of the priority queue.
     Task* earliestTask = m_activeTasks.top();
-    earliestTask->AdvanceCompute();
+
+    DispatchProcessTaskEvent(earliestTask);
 
     if (earliestTask->IsComplete()){
         // This task is complete. Remove from m_activeTasks and
         // let simulator know.
         m_activeTasks.pop();
         DispatchCompleteTaskEvent(earliestTask);
+        return;
     }
+
+    earliestTask->AdvanceCompute();
 }

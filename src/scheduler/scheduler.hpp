@@ -8,6 +8,7 @@ struct SchedEventInfo {
     std::function<void(Task*, float)> onTaskRejected;
     std::function<void(Task*)> onTaskCompleted;
     std::function<void(Task*, float)> onTaskAccepted;
+    std::function<void(Task*)> onTaskProcessing;
 };
 
 class BaseScheduler
@@ -38,6 +39,10 @@ protected:
 
     void DispatchCompleteTaskEvent(Task* task){
         m_eventInfo.onTaskCompleted(task);
+    }
+
+    void DispatchProcessTaskEvent(Task* task){
+        m_eventInfo.onTaskProcessing(task);
     }
     
 public:
