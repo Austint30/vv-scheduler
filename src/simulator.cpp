@@ -38,9 +38,27 @@ void Simulator::RunLoop(){
     }
 }
 
+std::string Simulator::SchedPQToStr(){
+
+    std::string str = "PQ: [ ";
+
+    auto pq = m_schedImpl->GetTaskQueue();
+
+    for (int i = 0; i < pq.size(); i++)
+    {
+        str += std::to_string(pq.at(i)->getInfo().taskNum) + " ";
+    }
+
+    str += "]";
+    
+    return str;
+}
+
 void Simulator::HandleTaskProcessEvent(Task* task){
     std::cout << "⚙️  Processing Task " << task->getInfo().taskNum <<
-        " with " << task->GetRemainCompute() << " time left" << std::endl;
+        " with " << task->GetRemainCompute() << " time left   " << SchedPQToStr();
+
+    std::cout << std::endl;
 }
 
 void Simulator::HandleTaskCompleteEvent(Task* task){

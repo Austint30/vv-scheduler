@@ -23,6 +23,8 @@ private:
     void HandleTaskRejectEvent(Task* task, float utilization);
     void HandleTaskAcceptEvent(Task* task, float utilization);
 
+    std::string SchedPQToStr();
+
 public:
     Simulator(std::queue<Task*>& taskQueue);
 

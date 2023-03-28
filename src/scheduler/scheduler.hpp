@@ -54,4 +54,15 @@ public:
 
     // Flag if tasks are currently active and processing.
     bool IsProcessing(){ return m_activeTasks.size() > 0 && m_hasStarted; }
+
+    std::vector<Task*> GetTaskQueue(){
+        auto pqCopy = m_activeTasks;
+        std::vector<Task*> queue;
+        while (pqCopy.size() > 0){
+            queue.push_back(pqCopy.top());
+            pqCopy.pop();
+        }
+
+        return queue;
+    };
 };
