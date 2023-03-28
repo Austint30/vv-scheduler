@@ -31,10 +31,11 @@ void Simulator::RunLoop(){
             }
         }
 
+        m_time++;
+
         m_schedImpl->Tick(m_time);
 
         sleep(m_cycleDelay);
-        m_time++;
     }
 }
 

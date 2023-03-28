@@ -4,6 +4,8 @@
 #include "queue"
 #include "../task.hpp"
 
+#define TASK_PRIORITY_QUEUE std::priority_queue<Task*, std::vector<Task*>, TaskComparator>
+
 struct SchedEventInfo {
     std::function<void(Task*, float)> onTaskRejected;
     std::function<void(Task*)> onTaskCompleted;
@@ -11,14 +13,27 @@ struct SchedEventInfo {
     std::function<void(Task*)> onTaskProcessing;
 };
 
+class TaskComparator
+{
+    public:
+    bool operator()(Task* below, Task* above)
+    {
+        return below->getInfo().deadline > above->getInfo().deadline;
+    }
+};
+
 class BaseScheduler
 {
     friend class Simulator;
+
 protected:
-    std::priority_queue<Task*> m_activeTasks;
+    TASK_PRIORITY_QUEUE m_activeTasks;
     Task* processingTask;
     SchedEventInfo m_eventInfo;
     bool m_hasStarted = false;
+
+    // This value is set when a context switch occurrs
+    int ctxSwitchTime = 0;
 
     void Init(SchedEventInfo eventInfo){
         m_eventInfo = eventInfo;

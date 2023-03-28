@@ -33,9 +33,5 @@ public:
             m_currCompute--;
         }
     };
-
-    friend bool operator < (const Task& lhs, const Task& rhs){
-        return lhs.m_info.deadline < rhs.m_info.deadline;
-    }
 };
 

@@ -1,26 +1,27 @@
 #include <algorithm>
 #include "sts.hpp"
 
-float STSScheduler::CalcUj(int j, int time, std::priority_queue<Task*> activeTasksCopy){
+float STSScheduler::CalcUj(int j, int time, TASK_PRIORITY_QUEUE activeTasksCopy){
     int remainingSum = 0;
     int origSize = activeTasksCopy.size();
     Task* taskAtJ = nullptr;
 
     for (int i = 0; i <= j; i++)
     {
-        remainingSum += activeTasksCopy.top()->GetRemainDeadline(time);
+        remainingSum += activeTasksCopy.top()->GetRemainCompute();
         if (i == j){
             taskAtJ = activeTasksCopy.top();
         }
         activeTasksCopy.pop();
     }
 
-    int divisor = taskAtJ->getInfo().deadline;
+    int divisor = static_cast<float>(taskAtJ->getInfo().deadline - time);
+    float u = static_cast<float>(remainingSum) / divisor;
     
-    return remainingSum / divisor;
+    return u;
 }
 
-float STSScheduler::CalcMaxU(int time, std::priority_queue<Task*>& activeTasks){
+float STSScheduler::CalcMaxU(int time, TASK_PRIORITY_QUEUE& activeTasks){
 
     float maxU = 0;
 

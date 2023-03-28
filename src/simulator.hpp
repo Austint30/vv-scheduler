@@ -10,7 +10,7 @@
 class Simulator
 {
 private:
-    int m_time = 1;
+    int m_time = 0;
     int m_cycleDelay = 1; // seconds
     std::queue<Task*> m_taskQueue;
     std::vector<Task*> m_completedTasks;

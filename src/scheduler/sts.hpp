@@ -9,8 +9,8 @@ class STSScheduler: public BaseScheduler
 
 private:
 
-    float CalcUj(int j, int time, std::priority_queue<Task*> activeTasksCopy);
-    float CalcMaxU(int time, std::priority_queue<Task*>& activeTasks);
+    float CalcUj(int j, int time, TASK_PRIORITY_QUEUE activeTasksCopy);
+    float CalcMaxU(int time, TASK_PRIORITY_QUEUE& activeTasks);
 
 public:
     void HandleArrivedTask(Task* task, int time);
