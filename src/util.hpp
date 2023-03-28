@@ -33,7 +33,7 @@ inline std::string onlyAlNum(std::string str){
     std::string fixed = "";
     for (int i = 0; i < str.length(); i++)
     {
-        if (std::isalnum(str[i]))
+        if (std::isdigit(str[i]))
             fixed += str[i];
     }
     return fixed;

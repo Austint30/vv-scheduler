@@ -58,8 +58,13 @@ inline std::vector<int> parseTask(std::string str){
             continue;
         }
 
-        if (inBrackets && std::isalnum(c)){
+        if (inBrackets && std::isdigit(c)){
             partial += c;
+        }
+        else if (std::isdigit(c)){
+            // Number outside of brackets? Must be task number.
+            partial += c;
+            continue;
         }
     }
 
@@ -92,10 +97,11 @@ inline void inputToQueue(std::queue<Task*>& queue){
         auto taskProps = parseTask(line);
 
         auto info = TaskInfo();
-        info.arrive = taskProps.at(0);
-        info.compute = taskProps.at(1);
-        info.deadline = taskProps.at(2);
-        info.ctxswitch = taskProps.at(3);
+        info.taskNum = taskProps.at(0);
+        info.arrive = taskProps.at(1);
+        info.compute = taskProps.at(2);
+        info.deadline = taskProps.at(3);
+        info.ctxswitch = taskProps.at(4);
 
         Task* task = new Task(info);
 
