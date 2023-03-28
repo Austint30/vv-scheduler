@@ -75,3 +75,7 @@ void Simulator::HandleTaskAcceptEvent(Task* task, float utilization){
     std::cout << "✅ Task " << task->getInfo().taskNum << " has been accepted at time " << m_time <<
     " with calculated utilization " << utilization << std::endl;
 }
+
+void Simulator::PrintSchedule(){
+    std::cout << "Schedule printer is a WIP 😉" << std::endl;
+}

@@ -16,6 +16,9 @@ int main(int argc, char const *argv[])
     sim->SetCycleDelay(1);
     sim->RunLoop();
 
+    std::cout << "\nSimulator finished. Printing resulting schedule:" << std::endl;
+    sim->PrintSchedule();
+
     std::cout << "Finished." << std::endl;
     return 0;
 }

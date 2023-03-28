@@ -37,4 +37,6 @@ public:
     void SetCycleDelay(int delay){ m_cycleDelay = delay; };
 
     void RunLoop();
+
+    void PrintSchedule();
 };
