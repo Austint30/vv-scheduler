@@ -17,7 +17,7 @@ void Simulator::RunLoop(){
 
     m_schedImpl->Init(eventInfo);
 
-    while (m_taskQueue.size() > 0 || !m_schedImpl->Finished()){
+    while (m_taskQueue.size() > 0 || m_schedImpl->IsProcessing()){
         if (m_taskQueue.size() > 0){
             auto nextTask = m_taskQueue.front();
             if (nextTask->HasArrived(m_time)){

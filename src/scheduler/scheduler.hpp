@@ -46,5 +46,7 @@ public:
     virtual void Tick(int time) = 0;
     virtual void HandleArrivedTask(Task* task, int time) = 0;
 
-    bool Finished(){ return m_activeTasks.size() == 0 && m_hasStarted; }
+
+    // Flag if tasks are currently active and processing.
+    bool IsProcessing(){ return m_activeTasks.size() > 0 && m_hasStarted; }
 };
