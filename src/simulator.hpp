@@ -2,10 +2,11 @@
 
 #include <queue>
 #include <iostream>
+#include <unistd.h>
 #include "task.hpp"
 #include "scheduler/scheduler.hpp"
 #include "scheduler/sts.hpp"
-#include <unistd.h>
+#include "scheduler/output.hpp"
 
 class Simulator
 {
@@ -17,6 +18,8 @@ private:
     std::vector<Task*> m_rejectedTasks;
 
     BaseScheduler* m_schedImpl = new STSScheduler();
+
+    ScheduleOutput* output = new ScheduleOutput();
 
     void HandleTaskProcessEvent(Task* task);
     void HandleTaskCompleteEvent(Task* task);
@@ -30,9 +33,7 @@ public:
 
     void UseSchedImpl(BaseScheduler* schedImpl){ m_schedImpl = schedImpl; }
 
-    ~Simulator(){
-        delete m_schedImpl;
-    };
+    ~Simulator(){};
 
     void SetCycleDelay(int delay){ m_cycleDelay = delay; };
 

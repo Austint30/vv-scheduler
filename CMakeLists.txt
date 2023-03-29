@@ -9,4 +9,5 @@ add_executable(
     src/task.cpp
     src/simulator.cpp
     src/scheduler/sts.cpp
+    src/scheduler/output.cpp
 )

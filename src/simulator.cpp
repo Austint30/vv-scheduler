@@ -1,6 +1,7 @@
 #include <functional>
 #include <iostream>
 #include "simulator.hpp"
+#include "vendor/variatic_table.hpp"
 
 using namespace std::placeholders;
 
@@ -60,6 +61,8 @@ void Simulator::HandleTaskProcessEvent(Task* task){
         " with " << task->GetRemainCompute() << " time left   " << SchedPQToStr();
 
     std::cout << std::endl;
+
+    output->AppendTask(task);
 }
 
 void Simulator::HandleTaskCompleteEvent(Task* task){
@@ -77,5 +80,5 @@ void Simulator::HandleTaskAcceptEvent(Task* task, float utilization){
 }
 
 void Simulator::PrintSchedule(){
-    std::cout << "Schedule printer is a WIP 😉" << std::endl;
+    output->PrintTable();
 }
