@@ -11,6 +11,7 @@ struct SchedEventInfo {
     std::function<void(Task*)> onTaskCompleted;
     std::function<void(Task*, float)> onTaskAccepted;
     std::function<void(Task*)> onTaskProcessing;
+    std::function<void(Task*, Task*, int)> onContextSwitch;
 };
 
 class TaskComparator
@@ -35,13 +36,37 @@ protected:
     // This value is set when a context switch occurrs
     int ctxSwitchTime = 0;
 
+    void PushTask(Task* task){
+        auto lastTask = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
+        m_activeTasks.push(task);
+
+        if (lastTask != nullptr && m_activeTasks.top() != lastTask){
+            // Context switch detected!
+            DispatchContextSwitch(lastTask, m_activeTasks.top());
+        }
+        
+    }
+
+    void PopTask(){
+        if (m_activeTasks.size() == 0) return;
+
+        auto lastTask = m_activeTasks.top();
+        m_activeTasks.pop();
+
+        if (m_activeTasks.size() > 0){
+            // Context switch always happens when a pop occurs since it
+            // always pops from the highest priority.
+            DispatchContextSwitch(lastTask, m_activeTasks.top());
+        }
+    }
+
     void Init(SchedEventInfo eventInfo){
         m_eventInfo = eventInfo;
     }
 
     void PutArrivedTask(Task* task){
         if (!m_hasStarted){ m_hasStarted = true; }
-        m_activeTasks.push(task);
+        PushTask(task);
     };
 
     void DispatchRejectTaskEvent(Task* task, float utilization){
@@ -58,6 +83,14 @@ protected:
 
     void DispatchProcessTaskEvent(Task* task){
         m_eventInfo.onTaskProcessing(task);
+    }
+
+    void DispatchContextSwitch(Task* oldTask, Task* newTask){
+        m_eventInfo.onContextSwitch(
+            oldTask, newTask, 
+            oldTask->getInfo().ctxswitch + 
+            newTask->getInfo().ctxswitch
+        );
     }
     
 public:

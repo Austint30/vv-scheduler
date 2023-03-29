@@ -12,15 +12,20 @@ void ScheduleOutput::AppendCtxSwitch(){
 
 void ScheduleOutput::PrintTable(){
 
-    VariadicTable<int, int> vt({"Time", "Task #"});
+    VariadicTable<int, std::string> vt({"Time", "Task #"});
 
     int time = 0;
     while (!m_scheduledTasks.empty()){
         time++;
-        auto task = m_scheduledTasks.front();
-        vt.addRow(time, task->getInfo().taskNum);
+        auto task = m_scheduledTasks.size() > 0 ? m_scheduledTasks.front() : nullptr;
+        if (task == nullptr)
+            vt.addRow(time, "CS");
+        else
+            vt.addRow(time, std::to_string(task->getInfo().taskNum));
         m_scheduledTasks.pop();
     }
 
     vt.print(std::cout);
+
+    std::cout << "CS = \"Context Switch\"" << std::endl;
 }

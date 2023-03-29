@@ -17,16 +17,22 @@ private:
     std::vector<Task*> m_completedTasks;
     std::vector<Task*> m_rejectedTasks;
 
+    int m_ctxSwitchTime = 0;
+
     BaseScheduler* m_schedImpl = new STSScheduler();
 
-    ScheduleOutput* output = new ScheduleOutput();
+    ScheduleOutput* m_output = new ScheduleOutput();
 
     void HandleTaskProcessEvent(Task* task);
     void HandleTaskCompleteEvent(Task* task);
     void HandleTaskRejectEvent(Task* task, float utilization);
     void HandleTaskAcceptEvent(Task* task, float utilization);
+    void HandleContextSwitchEvent(Task* oldTask, Task* newTask, int switchTime);
 
     std::string SchedPQToStr();
+    std::string GetTimeStr(){ return "[ T=" + std::to_string(m_time) + " ]"; };
+
+    void CheckDeadlines();
 
 public:
     Simulator(std::queue<Task*>& taskQueue);

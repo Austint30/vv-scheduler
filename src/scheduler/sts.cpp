@@ -71,10 +71,20 @@ void STSScheduler::Tick(int time){
     if (earliestTask->IsComplete()){
         // This task is complete. Remove from m_activeTasks and
         // let simulator know.
-        m_activeTasks.pop();
+        PopTask();
         DispatchCompleteTaskEvent(earliestTask);
         return;
     }
 
     earliestTask->AdvanceCompute();
 }
+
+/*
+auto currTask = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
+
+if (currTask != nullptr && m_activeTasks.top() != currTask){
+    // Preemption detected!
+    DispatchContextSwitch(currTask, m_activeTasks.top());
+}
+
+*/
