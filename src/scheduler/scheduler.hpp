@@ -6,12 +6,15 @@
 
 #define TASK_PRIORITY_QUEUE std::priority_queue<Task*, std::vector<Task*>, TaskComparator>
 
-struct SchedEventInfo {
+struct SchedInfo {
     std::function<void(Task*, float)> onTaskRejected;
     std::function<void(Task*)> onTaskCompleted;
     std::function<void(Task*, float)> onTaskAccepted;
     std::function<void(Task*)> onTaskProcessing;
     std::function<void(Task*, Task*, int)> onContextSwitch;
+
+    // Will use continuous voltage if vector is empty.
+    std::vector<float> voltages;
 };
 
 class TaskComparator
@@ -29,8 +32,7 @@ class BaseScheduler
 
 protected:
     TASK_PRIORITY_QUEUE m_activeTasks;
-    Task* processingTask;
-    SchedEventInfo m_eventInfo;
+    SchedInfo m_info;
     bool m_hasStarted = false;
 
     // This value is set when a context switch occurrs
@@ -60,8 +62,8 @@ protected:
         }
     }
 
-    void Init(SchedEventInfo eventInfo){
-        m_eventInfo = eventInfo;
+    void Init(SchedInfo info){
+        m_info = info;
     }
 
     void PutArrivedTask(Task* task){
@@ -70,23 +72,23 @@ protected:
     };
 
     void DispatchRejectTaskEvent(Task* task, float utilization){
-        m_eventInfo.onTaskRejected(task, utilization);
+        m_info.onTaskRejected(task, utilization);
     }
 
     void DispatchAcceptTaskEvent(Task* task, float utilization){
-        m_eventInfo.onTaskAccepted(task, utilization);
+        m_info.onTaskAccepted(task, utilization);
     }
 
     void DispatchCompleteTaskEvent(Task* task){
-        m_eventInfo.onTaskCompleted(task);
+        m_info.onTaskCompleted(task);
     }
 
     void DispatchProcessTaskEvent(Task* task){
-        m_eventInfo.onTaskProcessing(task);
+        m_info.onTaskProcessing(task);
     }
 
     void DispatchContextSwitch(Task* oldTask, Task* newTask){
-        m_eventInfo.onContextSwitch(
+        m_info.onContextSwitch(
             oldTask, newTask, 
             oldTask->getInfo().ctxswitch + 
             newTask->getInfo().ctxswitch

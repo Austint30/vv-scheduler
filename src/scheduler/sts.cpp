@@ -16,7 +16,7 @@ float STSScheduler::CalcUj(int j, int time, TASK_PRIORITY_QUEUE activeTasksCopy)
 
     for (int i = 0; i <= j; i++)
     {
-        remainingSum += activeTasksCopy.top()->GetRemainCompute();
+        remainingSum += activeTasksCopy.top()->GetRemainComputeNoVolt();
         if (i == j){
             taskAtJ = activeTasksCopy.top();
         }
@@ -42,11 +42,6 @@ float STSScheduler::CalcMaxU(int time, TASK_PRIORITY_QUEUE& activeTasks){
 }
 
 void STSScheduler::HandleArrivedTask(Task* task, int time){
-    if (m_activeTasks.size() == 0){
-        // Nothing in priority queue. Just insert it.
-        PutArrivedTask(task);
-        return;
-    }
 
     // Create a copy of m_activeTasks and add this newly
     // arrived task to it. Then perform an acceptance test.
@@ -65,6 +60,9 @@ void STSScheduler::HandleArrivedTask(Task* task, int time){
         // and push to m_activeTasks
         PutArrivedTask(task);
         DispatchAcceptTaskEvent(task, utilization);
+
+        // Update voltage with quadratic relationship
+        m_currVoltage = utilization;
     }
 }
 
@@ -83,6 +81,7 @@ void STSScheduler::Tick(int time){
 
     if (m_activeTasks.size() > 0){
         earliestTask = m_activeTasks.top();
+        earliestTask->SetVoltage(m_currVoltage);
         DispatchProcessTaskEvent(earliestTask);
         earliestTask->AdvanceCompute();
     }

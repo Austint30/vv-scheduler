@@ -9,11 +9,17 @@ int main(int argc, char const *argv[])
 {
 
     std::queue<Task*> queue;
-    inputToQueue(queue);
+    std::vector<float> voltages;
+    inputToQueue(queue, voltages);
 
     auto sim = new Simulator(queue);
     sim->UseSchedImpl(new STSScheduler());
-    sim->SetCycleDelay(1);
+    sim->SetCycleDelay(0);
+
+    if (voltages.size() > 0){
+        sim->SetVoltages(voltages);
+    }
+
     try {
         sim->RunLoop();
     }

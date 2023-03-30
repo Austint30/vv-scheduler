@@ -18,13 +18,15 @@ private:
     std::map<int, float> m_voltageTimes;
     std::set<int> m_csTimes;
 
+    float m_lastVoltage = 1.0;
+
     void RecordTime(int time){
         m_maxTime = std::max(m_maxTime, time);
     }
 public:
 
-    void RecordTask(int time, Task* task, float voltage=1.0);
-    void RecordCtxSwitch(int time, float voltage=1.0);
+    void RecordTask(int time, Task* task);
+    void RecordCtxSwitch(int time);
 
     void PrintTable();
 };

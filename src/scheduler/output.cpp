@@ -2,18 +2,20 @@
 #include "output.hpp"
 #include "../vendor/variatic_table.hpp"
 
-void ScheduleOutput::RecordTask(int time, Task* task, float voltage){
+void ScheduleOutput::RecordTask(int time, Task* task){
     TaskImage image;
     image.taskNum = task->getInfo().taskNum;
     image.remainCompute = task->GetRemainCompute();
     m_taskTimes[time] = image;
+    float voltage = task->GetVoltage();
     m_voltageTimes[time] = voltage;
+    m_lastVoltage = voltage;
     RecordTime(time);
 }
 
-void ScheduleOutput::RecordCtxSwitch(int time, float voltage){
+void ScheduleOutput::RecordCtxSwitch(int time){
     m_csTimes.insert(time);
-    m_voltageTimes[time] = voltage;
+    m_voltageTimes[time] = m_lastVoltage;
     RecordTime(time);
 }
 

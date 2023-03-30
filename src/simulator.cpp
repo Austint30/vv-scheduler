@@ -11,15 +11,15 @@ Simulator::Simulator(std::queue<Task*>& taskQueue){
 
 void Simulator::RunLoop(){
 
-    SchedEventInfo eventInfo;
+    SchedInfo info;
     
-    eventInfo.onTaskProcessing = std::bind(&Simulator::HandleTaskProcessEvent, this, _1);
-    eventInfo.onTaskCompleted = std::bind(&Simulator::HandleTaskCompleteEvent, this, _1);
-    eventInfo.onTaskRejected = std::bind(&Simulator::HandleTaskRejectEvent, this, _1, _2);
-    eventInfo.onTaskAccepted = std::bind(&Simulator::HandleTaskAcceptEvent, this, _1, _2);
-    eventInfo.onContextSwitch = std::bind(&Simulator::HandleContextSwitchEvent, this, _1, _2, _3);
+    info.onTaskProcessing = std::bind(&Simulator::HandleTaskProcessEvent, this, _1);
+    info.onTaskCompleted = std::bind(&Simulator::HandleTaskCompleteEvent, this, _1);
+    info.onTaskRejected = std::bind(&Simulator::HandleTaskRejectEvent, this, _1, _2);
+    info.onTaskAccepted = std::bind(&Simulator::HandleTaskAcceptEvent, this, _1, _2);
+    info.onContextSwitch = std::bind(&Simulator::HandleContextSwitchEvent, this, _1, _2, _3);
 
-    m_schedImpl->Init(eventInfo);
+    m_schedImpl->Init(info);
 
     while (m_taskQueue.size() > 0 || m_schedImpl->IsProcessing()){
         std::cout << "Time: " << m_time << std::endl;

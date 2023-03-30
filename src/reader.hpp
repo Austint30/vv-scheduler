@@ -75,20 +75,68 @@ inline std::vector<int> parseTask(std::string str){
     return values;
 }
 
-// inline std::vector<float> getPossibleSpeeds(std::string line){
-//     std::string prefix = "Possible speeds: ";
+inline bool isPossibleSpeeds(std::string line){
+    std::string prefix = "Possible speeds: ";
+    for (int i = 0; i < line.size(); i++)
+    {
+        if (i < prefix.size() && line[i] != prefix[i])
+        {
+            return false;
+        }
+    }
 
-//     for (int i = 0; i < line.size(); i++)
-//     {
-//         if (i < prefix.size() && line[i] != prefix[i]){
-//             return std::vector<float>{};
-//         }
+    return true;
+}
 
-//         if ()
-//     }
-// }
+inline std::vector<float> getPossibleSpeeds(std::string line){
+    
+    if (!isPossibleSpeeds(line)){
+        return std::vector<float>{};
+    }
 
-inline void inputToQueue(std::queue<Task*>& queue){
+    bool inBrackets = false;
+    std::vector<float> values;
+    std::string partial;
+
+    for (int i = 0; i < line.size(); i++)
+    {
+        char c = line.at(i);
+
+        if (c == '['){
+            inBrackets = true;
+            continue;
+        }
+
+        if (c == ',') continue;
+
+        if (c == ' ' && partial.length() > 0){
+            values.push_back(std::stoi(partial));
+            partial = "";
+            continue;
+        }
+
+        if (inBrackets && std::isdigit(c)){
+            partial += c;
+        }
+        else if (std::isdigit(c)){
+            // Number outside of brackets? Must be task number.
+            partial += c;
+            continue;
+        }
+
+        if (c == ']' || c == ')'){
+            break;
+        }
+    }
+
+    if (partial.length() > 0){
+        values.push_back(std::stoi(partial));
+    }
+
+    return values;
+}
+
+inline void inputToQueue(std::queue<Task*>& queue, std::vector<float>& voltages){
     int nTasks;
     std::string nTasksStr;
 
@@ -99,6 +147,8 @@ inline void inputToQueue(std::queue<Task*>& queue){
         std::cout << std::endl;
         break;
     }
+
+
     
     while (queue.size() < nTasks){
         std::string line;
@@ -106,6 +156,11 @@ inline void inputToQueue(std::queue<Task*>& queue){
         std::cout << std::endl;
         line = removeLineEndings(line);
         if (line.length() == 0) continue;
+
+        if (isPossibleSpeeds(line)){
+            voltages = getPossibleSpeeds(line);
+            continue;
+        }
 
         auto taskProps = parseTask(line);
 

@@ -18,6 +18,8 @@ private:
     std::vector<Task*> m_completedTasks;
     std::vector<Task*> m_rejectedTasks;
 
+    std::vector<float> m_voltages;
+
     int m_ctxSwitchTime = 0;
 
     BaseScheduler* m_schedImpl = new STSScheduler();
@@ -47,4 +49,6 @@ public:
     void RunLoop();
 
     void PrintSchedule();
+
+    void SetVoltages(std::vector<float> voltages){ m_voltages = voltages; };
 };

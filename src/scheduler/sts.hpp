@@ -9,6 +9,8 @@ class STSScheduler: public BaseScheduler
 
 private:
 
+    float m_currVoltage = 1.0;
+
     float CalcUj(int j, int time, TASK_PRIORITY_QUEUE activeTasksCopy);
     float CalcMaxU(int time, TASK_PRIORITY_QUEUE& activeTasks);
 
