@@ -14,6 +14,7 @@ private:
     int m_time = 0;
     int m_cycleDelay = 1; // seconds
     std::queue<Task*> m_taskQueue;
+    std::queue<Task*> m_pendingArrivedTasks;
     std::vector<Task*> m_completedTasks;
     std::vector<Task*> m_rejectedTasks;
 

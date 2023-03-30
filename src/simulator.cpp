@@ -21,31 +21,32 @@ void Simulator::RunLoop(){
 
     m_schedImpl->Init(eventInfo);
 
-    std::cout << "Time: 0" << std::endl;
-
     while (m_taskQueue.size() > 0 || m_schedImpl->IsProcessing()){
+        std::cout << "Time: " << m_time << std::endl;
+
         if (m_taskQueue.size() > 0){
             auto nextTask = m_taskQueue.front();
-            if (nextTask->HasArrived(m_time)){
-                // Task has arrived. Remove from tasks queue and place on active tasks vector.
+            while (nextTask->HasArrived(m_time)){
                 std::cout << "\t🛬 Task " << nextTask->getInfo().taskNum << " has arrived at time " << m_time << std::endl;
                 m_schedImpl->HandleArrivedTask(nextTask, m_time);
                 m_taskQueue.pop();
-                continue;
+                if (m_taskQueue.size() == 0)
+                    break;
+                else
+                    nextTask = m_taskQueue.front();
             }
-        }
-
-        m_time++;
-        std::cout << "Time: " << m_time << std::endl;
+        }   
 
         if (m_ctxSwitchTime > 0){
-            m_output->AppendCtxSwitch();
+            m_output->RecordCtxSwitch(m_time);
             m_ctxSwitchTime--;
         }
         else{
             m_schedImpl->Tick(m_time);
             CheckDeadlines();
         }
+
+        m_time++;
 
         sleep(m_cycleDelay);
     }
@@ -60,7 +61,7 @@ void Simulator::CheckDeadlines(){
 
         if (task->GetRemainDeadline(m_time) < 0){
             throw std::runtime_error(
-                std::string("☠ Task ") + std::to_string(task->getInfo().taskNum) 
+                std::string("☠  Task ") + std::to_string(task->getInfo().taskNum) 
                     + " has exceeded its deadline at time "
                     + std::to_string(task->getInfo().deadline)
                     + " (current time: " + std::to_string(m_time) + " )");
@@ -90,7 +91,7 @@ void Simulator::HandleTaskProcessEvent(Task* task){
 
     std::cout << std::endl;
 
-    m_output->AppendTask(task);
+    m_output->RecordTask(m_time, task);
 }
 
 void Simulator::HandleTaskCompleteEvent(Task* task){
@@ -108,7 +109,9 @@ void Simulator::HandleTaskAcceptEvent(Task* task, float utilization){
 }
 
 void Simulator::HandleContextSwitchEvent(Task* oldTask, Task* newTask, int switchTime){
-    std::cout << "\t⏹ Task " << oldTask->getInfo().taskNum << " preempted by Task "
+
+    if (oldTask->GetRemainCompute() == 0)
+    std::cout << "\t⏹  Task " << oldTask->getInfo().taskNum << " preempted by Task "
         << newTask->getInfo().taskNum << " at time " << m_time << std::endl;
     
     std::cout << "\tWaiting for context switch to finish. Context switch time: " << switchTime << std::endl;

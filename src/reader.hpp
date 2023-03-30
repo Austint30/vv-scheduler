@@ -75,6 +75,19 @@ inline std::vector<int> parseTask(std::string str){
     return values;
 }
 
+// inline std::vector<float> getPossibleSpeeds(std::string line){
+//     std::string prefix = "Possible speeds: ";
+
+//     for (int i = 0; i < line.size(); i++)
+//     {
+//         if (i < prefix.size() && line[i] != prefix[i]){
+//             return std::vector<float>{};
+//         }
+
+//         if ()
+//     }
+// }
+
 inline void inputToQueue(std::queue<Task*>& queue){
     int nTasks;
     std::string nTasksStr;

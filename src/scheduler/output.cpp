@@ -2,27 +2,39 @@
 #include "output.hpp"
 #include "../vendor/variatic_table.hpp"
 
-void ScheduleOutput::AppendTask(Task* task){
-    m_scheduledTasks.push(task);
+void ScheduleOutput::RecordTask(int time, Task* task, float voltage){
+    TaskImage image;
+    image.taskNum = task->getInfo().taskNum;
+    image.remainCompute = task->GetRemainCompute();
+    m_taskTimes[time] = image;
+    m_voltageTimes[time] = voltage;
+    RecordTime(time);
 }
 
-void ScheduleOutput::AppendCtxSwitch(){
-    m_scheduledTasks.push(nullptr);
+void ScheduleOutput::RecordCtxSwitch(int time, float voltage){
+    m_csTimes.insert(time);
+    m_voltageTimes[time] = voltage;
+    RecordTime(time);
 }
 
 void ScheduleOutput::PrintTable(){
 
-    VariadicTable<int, std::string> vt({"Time", "Task #"});
+    VariadicTable<int, std::string, std::string, float> vt({"Time", "Task #", "C Remain", "Voltage"});
 
-    int time = 0;
-    while (!m_scheduledTasks.empty()){
-        time++;
-        auto task = m_scheduledTasks.size() > 0 ? m_scheduledTasks.front() : nullptr;
-        if (task == nullptr)
-            vt.addRow(time, "CS");
-        else
-            vt.addRow(time, std::to_string(task->getInfo().taskNum));
-        m_scheduledTasks.pop();
+    for (int time = 0; time <= m_maxTime; time++){
+        if (m_taskTimes.find(time) != m_taskTimes.end()){
+            TaskImage image = m_taskTimes[time];
+            vt.addRow(
+                time,
+                std::to_string(image.taskNum),
+                std::to_string(image.remainCompute),
+                m_voltageTimes[time]
+            );
+        }
+        else if (m_csTimes.find(time) != m_csTimes.end())
+        {
+            vt.addRow(time, "CS", "", m_voltageTimes[time]);
+        }
     }
 
     vt.print(std::cout);

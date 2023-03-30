@@ -6,6 +6,14 @@ float STSScheduler::CalcUj(int j, int time, TASK_PRIORITY_QUEUE activeTasksCopy)
     int origSize = activeTasksCopy.size();
     Task* taskAtJ = nullptr;
 
+    Task* currTop = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
+
+    // Take context switch time into account
+    if (currTop != nullptr && activeTasksCopy.top() != currTop){
+        remainingSum += activeTasksCopy.top()->getInfo().ctxswitch +
+                        currTop->getInfo().ctxswitch;
+    }
+
     for (int i = 0; i <= j; i++)
     {
         remainingSum += activeTasksCopy.top()->GetRemainCompute();
@@ -66,17 +74,18 @@ void STSScheduler::Tick(int time){
     // Advance the computation of the top of the priority queue.
     Task* earliestTask = m_activeTasks.top();
 
-    DispatchProcessTaskEvent(earliestTask);
-
     if (earliestTask->IsComplete()){
         // This task is complete. Remove from m_activeTasks and
         // let simulator know.
         PopTask();
         DispatchCompleteTaskEvent(earliestTask);
-        return;
     }
 
-    earliestTask->AdvanceCompute();
+    if (m_activeTasks.size() > 0){
+        earliestTask = m_activeTasks.top();
+        DispatchProcessTaskEvent(earliestTask);
+        earliestTask->AdvanceCompute();
+    }
 }
 
 /*
