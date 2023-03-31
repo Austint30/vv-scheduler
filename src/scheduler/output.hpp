@@ -7,7 +7,7 @@
 
 struct TaskImage {
     int taskNum;
-    int remainCompute;
+    float computeProgress;
 };
 
 class ScheduleOutput

@@ -13,12 +13,14 @@ int main(int argc, char const *argv[])
     inputToQueue(queue, voltages);
 
     auto sim = new Simulator(queue);
-    sim->UseSchedImpl(new STSScheduler());
-    sim->SetCycleDelay(0);
+    auto sts = new STSScheduler();
 
     if (voltages.size() > 0){
-        sim->SetVoltages(voltages);
+        sts->SetDescreteVoltages(voltages);
     }
+
+    sim->UseSchedImpl(sts);
+    sim->SetCycleDelay(0);
 
     try {
         sim->RunLoop();

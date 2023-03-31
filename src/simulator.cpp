@@ -110,9 +110,9 @@ void Simulator::HandleTaskAcceptEvent(Task* task, float utilization){
 
 void Simulator::HandleContextSwitchEvent(Task* oldTask, Task* newTask, int switchTime){
 
-    if (oldTask->GetRemainCompute() == 0)
-    std::cout << "\t⏹  Task " << oldTask->getInfo().taskNum << " preempted by Task "
-        << newTask->getInfo().taskNum << " at time " << m_time << std::endl;
+    if (oldTask != nullptr && newTask != nullptr && oldTask->GetRemainCompute() != 0)
+        std::cout << "\t⏹  Task " << oldTask->getInfo().taskNum << " preempted by Task "
+            << newTask->getInfo().taskNum << " at time " << m_time << std::endl;
     
     std::cout << "\tWaiting for context switch to finish. Context switch time: " << switchTime << std::endl;
     

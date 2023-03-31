@@ -12,3 +12,5 @@ add_executable(
     src/scheduler/sts.cpp
     src/scheduler/output.cpp
 )
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)

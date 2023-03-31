@@ -110,12 +110,12 @@ inline std::vector<float> getPossibleSpeeds(std::string line){
         if (c == ',') continue;
 
         if (c == ' ' && partial.length() > 0){
-            values.push_back(std::stoi(partial));
+            values.push_back(std::stof(partial));
             partial = "";
             continue;
         }
 
-        if (inBrackets && std::isdigit(c)){
+        if (inBrackets && (std::isdigit(c) || c == '.')){
             partial += c;
         }
         else if (std::isdigit(c)){
@@ -130,7 +130,7 @@ inline std::vector<float> getPossibleSpeeds(std::string line){
     }
 
     if (partial.length() > 0){
-        values.push_back(std::stoi(partial));
+        values.push_back(std::stof(partial));
     }
 
     return values;

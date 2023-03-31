@@ -12,9 +12,6 @@ struct SchedInfo {
     std::function<void(Task*, float)> onTaskAccepted;
     std::function<void(Task*)> onTaskProcessing;
     std::function<void(Task*, Task*, int)> onContextSwitch;
-
-    // Will use continuous voltage if vector is empty.
-    std::vector<float> voltages;
 };
 
 class TaskComparator
@@ -38,29 +35,29 @@ protected:
     // This value is set when a context switch occurrs
     int ctxSwitchTime = 0;
 
-    void PushTask(Task* task){
-        auto lastTask = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
-        m_activeTasks.push(task);
+    // void PushTask(Task* task){
+    //     auto lastTask = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
+    //     m_activeTasks.push(task);
 
-        if (lastTask != nullptr && m_activeTasks.top() != lastTask){
-            // Context switch detected!
-            DispatchContextSwitch(lastTask, m_activeTasks.top());
-        }
+    //     if (m_activeTasks.top() != lastTask){
+    //         // Context switch detected!
+    //         DispatchContextSwitch(lastTask, m_activeTasks.top());
+    //     }
         
-    }
+    // }
 
-    void PopTask(){
-        if (m_activeTasks.size() == 0) return;
+    // void PopTask(){
+    //     if (m_activeTasks.size() == 0) return;
 
-        auto lastTask = m_activeTasks.top();
-        m_activeTasks.pop();
+    //     auto lastTask = m_activeTasks.top();
+    //     m_activeTasks.pop();
 
-        if (m_activeTasks.size() > 0){
-            // Context switch always happens when a pop occurs since it
-            // always pops from the highest priority.
-            DispatchContextSwitch(lastTask, m_activeTasks.top());
-        }
-    }
+    //     if (m_activeTasks.size() > 0){
+    //         // Context switch always happens when a pop occurs since it
+    //         // always pops from the highest priority.
+    //         DispatchContextSwitch(lastTask, m_activeTasks.top());
+    //     }
+    // }
 
     void Init(SchedInfo info){
         m_info = info;
@@ -68,7 +65,7 @@ protected:
 
     void PutArrivedTask(Task* task){
         if (!m_hasStarted){ m_hasStarted = true; }
-        PushTask(task);
+        m_activeTasks.push(task);
     };
 
     void DispatchRejectTaskEvent(Task* task, float utilization){
@@ -88,11 +85,13 @@ protected:
     }
 
     void DispatchContextSwitch(Task* oldTask, Task* newTask){
-        m_info.onContextSwitch(
-            oldTask, newTask, 
-            oldTask->getInfo().ctxswitch + 
-            newTask->getInfo().ctxswitch
-        );
+        int ctxTime = 0;
+        if (oldTask != nullptr)
+            ctxTime += oldTask->getInfo().ctxswitch;
+        if (newTask != nullptr)
+            ctxTime += newTask->getInfo().ctxswitch;
+            
+        m_info.onContextSwitch(oldTask, newTask, ctxTime);
     }
     
 public:
@@ -100,7 +99,6 @@ public:
 
     virtual void Tick(int time) = 0;
     virtual void HandleArrivedTask(Task* task, int time) = 0;
-
 
     // Flag if tasks are currently active and processing.
     bool IsProcessing(){ return m_activeTasks.size() > 0 && m_hasStarted; }

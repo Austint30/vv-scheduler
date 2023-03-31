@@ -14,11 +14,7 @@ private:
     int m_time = 0;
     int m_cycleDelay = 1; // seconds
     std::queue<Task*> m_taskQueue;
-    std::queue<Task*> m_pendingArrivedTasks;
-    std::vector<Task*> m_completedTasks;
-    std::vector<Task*> m_rejectedTasks;
-
-    std::vector<float> m_voltages;
+    std::vector<float> m_descVoltages;
 
     int m_ctxSwitchTime = 0;
 
@@ -31,6 +27,7 @@ private:
     void HandleTaskRejectEvent(Task* task, float utilization);
     void HandleTaskAcceptEvent(Task* task, float utilization);
     void HandleContextSwitchEvent(Task* oldTask, Task* newTask, int switchTime);
+    void HandleVoltageUpdateEvent(float voltage);
 
     std::string SchedPQToStr();
     std::string GetTimeStr(){ return "[ T=" + std::to_string(m_time) + " ]"; };
@@ -49,6 +46,4 @@ public:
     void RunLoop();
 
     void PrintSchedule();
-
-    void SetVoltages(std::vector<float> voltages){ m_voltages = voltages; };
 };

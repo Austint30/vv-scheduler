@@ -5,7 +5,7 @@
 void ScheduleOutput::RecordTask(int time, Task* task){
     TaskImage image;
     image.taskNum = task->getInfo().taskNum;
-    image.remainCompute = task->GetRemainCompute();
+    image.computeProgress = task->GetProgress();
     m_taskTimes[time] = image;
     float voltage = task->GetVoltage();
     m_voltageTimes[time] = voltage;
@@ -15,13 +15,12 @@ void ScheduleOutput::RecordTask(int time, Task* task){
 
 void ScheduleOutput::RecordCtxSwitch(int time){
     m_csTimes.insert(time);
-    m_voltageTimes[time] = m_lastVoltage;
     RecordTime(time);
 }
 
 void ScheduleOutput::PrintTable(){
 
-    VariadicTable<int, std::string, std::string, float> vt({"Time", "Task #", "C Remain", "Voltage"});
+    VariadicTable<int, std::string, std::string, float> vt({"Time", "Task #", "Progress", "Voltage"}, 15);
 
     for (int time = 0; time <= m_maxTime; time++){
         if (m_taskTimes.find(time) != m_taskTimes.end()){
@@ -29,7 +28,7 @@ void ScheduleOutput::PrintTable(){
             vt.addRow(
                 time,
                 std::to_string(image.taskNum),
-                std::to_string(image.remainCompute),
+                std::to_string(image.computeProgress),
                 m_voltageTimes[time]
             );
         }
