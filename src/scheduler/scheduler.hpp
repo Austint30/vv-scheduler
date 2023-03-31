@@ -1,7 +1,8 @@
 #pragma once
 
-#include "vector"
-#include "queue"
+#include <functional>
+#include <vector>
+#include <queue>
 #include "../task.hpp"
 
 #define TASK_PRIORITY_QUEUE std::priority_queue<Task*, std::vector<Task*>, TaskComparator>
@@ -32,32 +33,8 @@ protected:
     SchedInfo m_info;
     bool m_hasStarted = false;
 
-    // This value is set when a context switch occurrs
+    // This value is set when a context switch occurs
     int ctxSwitchTime = 0;
-
-    // void PushTask(Task* task){
-    //     auto lastTask = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
-    //     m_activeTasks.push(task);
-
-    //     if (m_activeTasks.top() != lastTask){
-    //         // Context switch detected!
-    //         DispatchContextSwitch(lastTask, m_activeTasks.top());
-    //     }
-        
-    // }
-
-    // void PopTask(){
-    //     if (m_activeTasks.size() == 0) return;
-
-    //     auto lastTask = m_activeTasks.top();
-    //     m_activeTasks.pop();
-
-    //     if (m_activeTasks.size() > 0){
-    //         // Context switch always happens when a pop occurs since it
-    //         // always pops from the highest priority.
-    //         DispatchContextSwitch(lastTask, m_activeTasks.top());
-    //     }
-    // }
 
     void Init(SchedInfo info){
         m_info = info;

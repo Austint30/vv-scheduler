@@ -3,7 +3,16 @@
 #include <iostream>
 #include <queue>
 #include "./task.hpp"
-#include "./util.hpp"
+
+inline std::string onlyAlNum(std::string str){
+    std::string fixed = "";
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (std::isdigit(str[i]))
+            fixed += str[i];
+    }
+    return fixed;
+}
 
 inline std::string removeLineEndings(std::string str){
     std::string fixed;
