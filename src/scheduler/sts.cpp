@@ -135,13 +135,3 @@ float STSScheduler::CalcVoltage(float utilization){
     }
     return utilization;
 }
-
-/*
-auto currTask = m_activeTasks.size() > 0 ? m_activeTasks.top() : nullptr;
-
-if (currTask != nullptr && m_activeTasks.top() != currTask){
-    // Preemption detected!
-    DispatchContextSwitch(currTask, m_activeTasks.top());
-}
-
-*/
